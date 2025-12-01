@@ -49,7 +49,6 @@ int  main(int argc, char* argv[])
 
 	pre_process_page(ssd);
 
-	full_block(ssd);
 
 	//full_block_valid(ssd);
 	
@@ -2169,32 +2168,6 @@ struct ssd_info *no_buffer_distribute(struct ssd_info *ssd)
 }
 
 
-int full_block(struct ssd_info *ssd)
-{
-	int cn_id, cp_id, di_id, pl_id,bl_id,cnt;
-	printf("Enter full_block......\n");
-	for(cn_id=0;cn_id<ssd->parameter->channel_number;cn_id++){
-		for(cp_id=0;cp_id<ssd->parameter->chip_channel[0];cp_id++){  //2
-			for(di_id=0;di_id<ssd->parameter->die_chip;di_id++){
-				for(pl_id=0;pl_id<ssd->parameter->plane_die;pl_id++){
-					for(bl_id=0;bl_id < full_ratio * ssd->parameter->block_plane;bl_id++){   //给多少块填数据
-						if(ssd->channel_head[cn_id].chip_head[cp_id].die_head[di_id].plane_head[pl_id].blk_head[bl_id].free_page_num!=ssd->parameter->page_block)
-						{
-							continue;
-						}
-						for(int i = 0;i < 0.85 * ssd->parameter->page_block ; i++)   //每块填多少无效页
-						{
-							full_invalid(ssd,cn_id,cp_id,di_id,pl_id,bl_id);
-						}
-					}
-				}
-			}
-		}
-	}
-	get_lsn(ssd);
-    full_valid(ssd);   //给多少块填数据
-	printf("\nfull_block is complete!\n");
-}
 
 
 int full_valid(struct ssd_info *ssd)
